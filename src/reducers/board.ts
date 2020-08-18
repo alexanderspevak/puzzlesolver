@@ -1,5 +1,5 @@
 import { BoardAction, ActionTypes } from '../actions';
-import { shapeSet1, Shape } from '../shapes';
+import { shapeSet1, Shape, shape1 } from '../shapes';
 
 export interface Coordinates {
   coordinates: Cell[][];
@@ -23,6 +23,7 @@ const createTable = (
   }
 
   const coordinates: BoardCoordinates['coordinates'] = [];
+
   const row = new Array(width);
   row.fill({ color: 'blue', taken: false });
 
@@ -35,13 +36,16 @@ const createTable = (
 
 const placeShapes = (
   currentCoordinates: BoardCoordinates['coordinates'],
-  shapeSets: Shape[],
-  height: number,
-  width: number
+  shapeSets: Shape[]
 ): BoardCoordinates['coordinates'] => {
   const temporaryCoordinates: BoardCoordinates['coordinates'] = currentCoordinates.map(
     row => row.map(cell => cell)
   );
+
+  const newCoordinates = shape1.getShapeCoordinates(temporaryCoordinates);
+  if (newCoordinates) {
+    return newCoordinates;
+  }
 
   return temporaryCoordinates;
 };
@@ -66,7 +70,7 @@ export const boardReducer = (
 
     case ActionTypes.placeShapes:
       return {
-        coordinates: placeShapes(state.coordinates, shapeSet1, 1, 1)
+        coordinates: placeShapes(state.coordinates, shapeSet1)
       };
 
     default:
