@@ -1,4 +1,4 @@
-import { Coordinates } from '../reducers/board';
+import { CoordinatesTable } from '../reducers/board';
 
 interface ShapeCell {
   name: string;
@@ -6,7 +6,6 @@ interface ShapeCell {
   right?: ShapeCell | undefined;
   top?: ShapeCell | undefined;
   bottom?: ShapeCell | undefined;
-  rotations: number;
   positionHeight?: number;
   positionWidth?: number;
 }
@@ -18,19 +17,17 @@ export enum Position {
   top = 'top'
 }
 
-type CoordinatesTable = Coordinates['coordinates'];
-
 export class Shape {
   public color: string;
   public container: ShapeCell[];
   public firstCell: ShapeCell;
+  public rotations = 0;
 
   constructor(color: string, firstCellName: string) {
     this.color = color;
 
     const firstCell = {
-      name: firstCellName,
-      rotations: 0
+      name: firstCellName
     };
 
     this.firstCell = firstCell;
@@ -56,8 +53,7 @@ export class Shape {
       return;
     }
     const newCell: ShapeCell = {
-      name: newCellName,
-      rotations: 0
+      name: newCellName
     };
 
     connectedCell[atPosition] = newCell;
@@ -65,25 +61,25 @@ export class Shape {
     this.container.push(newCell);
   }
 
-  private rotateShapes() {
-    this.container.forEach(shape => {
-      let topPosition = shape.top;
-      shape.top = shape.left;
-      shape.left = shape.bottom;
-      shape.bottom = shape.right;
-      shape.right = topPosition;
+  public rotateShape() {
+    this.container.forEach((cell: ShapeCell) => {
+      let topPosition = cell.top;
+      cell.top = cell.left;
+      cell.left = cell.bottom;
+      cell.bottom = cell.right;
+      cell.right = topPosition;
     });
+    this.rotations++;
   }
 
   public getShapeCoordinates(
     tableCoordinates: CoordinatesTable
-  ): CoordinatesTable | false {
+  ): CoordinatesTable | null {
     if (!this.setFirstCellCoordinates(tableCoordinates)) {
-      return false;
+      return null;
     }
 
     this.setShapeCoordinates();
-
     this.container.forEach(({ positionHeight, positionWidth }: ShapeCell) => {
       tableCoordinates[positionHeight!][positionWidth!].taken = true;
       tableCoordinates[positionHeight!][positionWidth!].color = this.color;
@@ -98,7 +94,7 @@ export class Shape {
 
     for (let i = 0; i < tableHeight; i++) {
       for (let j = 0; j < tableWidth; j++) {
-        if (this.traverseShape(this.firstCell, tableCoordinates, i, j)) {
+        if (this.findMatchingPosition(this.firstCell, tableCoordinates, i, j)) {
           this.setCellCoordinates(this.firstCell, i, j);
           return true;
         }
@@ -116,28 +112,21 @@ export class Shape {
     this.setCellCoordinates(cell, positionHeight!, positionWidth!);
 
     if (cell.top) {
-      console.log('cell top');
       this.setShapeCoordinates(cell.top, positionHeight! + 1, positionWidth);
     }
     if (cell.right) {
-      console.log('cell right');
-
       this.setShapeCoordinates(cell.right, positionHeight!, positionWidth! + 1);
     }
     if (cell.bottom) {
-      console.log('cell bottom');
-
       this.setShapeCoordinates(cell.bottom, positionHeight! - 1, positionWidth);
     }
 
     if (cell.left) {
-      console.log('cell left');
-
       this.setShapeCoordinates(cell.left, positionHeight!, positionWidth! - 1);
     }
   }
 
-  private traverseShape(
+  private findMatchingPosition(
     cell: ShapeCell,
     tableCoordinates: CoordinatesTable,
     cellHeightPosition: number,
@@ -169,7 +158,7 @@ export class Shape {
         return false;
       }
 
-      valuatedTop = this.traverseShape(
+      valuatedTop = this.findMatchingPosition(
         cell.top as ShapeCell,
         tableCoordinates,
         cellHeightPosition + 1,
@@ -188,7 +177,7 @@ export class Shape {
         return false;
       }
 
-      valuatedRight = this.traverseShape(
+      valuatedRight = this.findMatchingPosition(
         cell.right as ShapeCell,
         tableCoordinates,
         cellHeightPosition,
@@ -207,7 +196,7 @@ export class Shape {
         return false;
       }
 
-      valuatedBottom = this.traverseShape(
+      valuatedBottom = this.findMatchingPosition(
         cell.bottom as ShapeCell,
         tableCoordinates,
         cellHeightPosition - 1,
@@ -226,7 +215,7 @@ export class Shape {
         return false;
       }
 
-      valuatedLeft = this.traverseShape(
+      valuatedLeft = this.findMatchingPosition(
         cell.left as ShapeCell,
         tableCoordinates,
         cellHeightPosition,

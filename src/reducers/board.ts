@@ -1,5 +1,5 @@
 import { BoardAction, ActionTypes } from '../actions';
-import { shapeSet1, Shape, shape1 } from '../shapes';
+import { shapeSet } from '../shapes';
 
 export interface Coordinates {
   coordinates: Cell[][];
@@ -14,18 +14,17 @@ export interface BoardCoordinates {
   coordinates: Cell[][];
 }
 
-const createTable = (
-  height: number,
-  width: number
-): BoardCoordinates['coordinates'] => {
+export type CoordinatesTable = BoardCoordinates['coordinates'];
+
+const createTable = (height: number, width: number): CoordinatesTable => {
   if (isNaN(height) || isNaN(width)) {
     return createTable(4, 4);
   }
 
-  const coordinates: BoardCoordinates['coordinates'] = [];
+  const coordinates: CoordinatesTable = [];
 
   const row = new Array(width);
-  row.fill({ color: 'blue', taken: false });
+  row.fill({ color: 'gray', taken: false });
 
   for (let i = 0; i < height; i++) {
     coordinates.push(row);
@@ -35,14 +34,18 @@ const createTable = (
 };
 
 const placeShapes = (
-  currentCoordinates: BoardCoordinates['coordinates'],
-  shapeSets: Shape[]
-): BoardCoordinates['coordinates'] => {
-  const temporaryCoordinates: BoardCoordinates['coordinates'] = currentCoordinates.map(
-    row => row.map(cell => cell)
+  currentCoordinates: CoordinatesTable
+): CoordinatesTable => {
+  const temporaryCoordinates: CoordinatesTable = currentCoordinates.map(row =>
+    row.map(cell => {
+      return { ...cell };
+    })
   );
 
-  const newCoordinates = shape1.getShapeCoordinates(temporaryCoordinates);
+  const newCoordinates = shapeSet.getMatchingCoordinatesTable(
+    temporaryCoordinates
+  );
+
   if (newCoordinates) {
     return newCoordinates;
   }
@@ -51,7 +54,7 @@ const placeShapes = (
 };
 
 export const boardReducer = (
-  state: BoardCoordinates = { coordinates: createTable(4, 4) },
+  state: BoardCoordinates = { coordinates: createTable(4, 4), message: '' },
   action: BoardAction
 ): BoardCoordinates => {
   switch (action.type) {
@@ -70,7 +73,7 @@ export const boardReducer = (
 
     case ActionTypes.placeShapes:
       return {
-        coordinates: placeShapes(state.coordinates, shapeSet1)
+        coordinates: placeShapes(state.coordinates)
       };
 
     default:
