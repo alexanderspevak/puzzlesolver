@@ -1,2 +1,3 @@
 export * from './Shape';
-export * from './shapeSets';
+export * from './ShapeSet';
+export * from './sets';

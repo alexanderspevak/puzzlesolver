@@ -14,6 +14,10 @@ export interface PlaceShapes {
   type: ActionTypes.placeShapes;
 }
 
+export interface SwitchShape {
+  type: ActionTypes.switchSet;
+}
+
 export const setHeight = (height: number): SetHeight => ({
   type: ActionTypes.setHeight,
   payload: Math.max(4, height)
@@ -26,4 +30,8 @@ export const setWidth = (width: number): SetWidth => ({
 
 export const placeShapes = (): PlaceShapes => ({
   type: ActionTypes.placeShapes
+});
+
+export const switchSet = (): SwitchShape => ({
+  type: ActionTypes.switchSet
 });

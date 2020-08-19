@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
-import { boardReducer, BoardCoordinates } from './board';
+import { boardReducer, BoardState } from './board';
 
 export interface StoreState {
-  boardReducer: BoardCoordinates;
+  boardReducer: BoardState;
 }
 
 export const reducers = combineReducers<StoreState>({

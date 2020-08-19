@@ -1,20 +1,12 @@
 import { BoardAction, ActionTypes } from '../actions';
-import { shapeSet } from '../shapes';
+import { shapeSet1, shapeSet2, ShapeSet } from '../shapes';
+import { CoordinatesTable } from '../types';
 
-export interface Coordinates {
-  coordinates: Cell[][];
+export interface BoardState {
+  coordinates: CoordinatesTable;
+  message: string;
+  shapeSet: number;
 }
-
-interface Cell {
-  color: string;
-  taken: boolean;
-}
-
-export interface BoardCoordinates {
-  coordinates: Cell[][];
-}
-
-export type CoordinatesTable = BoardCoordinates['coordinates'];
 
 const createTable = (height: number, width: number): CoordinatesTable => {
   if (isNaN(height) || isNaN(width)) {
@@ -34,12 +26,12 @@ const createTable = (height: number, width: number): CoordinatesTable => {
 };
 
 const placeShapes = (
-  currentCoordinates: CoordinatesTable
-): CoordinatesTable => {
-  const temporaryCoordinates: CoordinatesTable = currentCoordinates.map(row =>
-    row.map(cell => {
-      return { ...cell };
-    })
+  currentCoordinates: CoordinatesTable,
+  shapeSet: ShapeSet
+): CoordinatesTable | null => {
+  const temporaryCoordinates: CoordinatesTable = createTable(
+    currentCoordinates.length,
+    currentCoordinates[0].length
   );
 
   const newCoordinates = shapeSet.getSolvedCoordinatesTable(
@@ -50,16 +42,24 @@ const placeShapes = (
     return newCoordinates;
   }
 
-  return temporaryCoordinates;
+  return null;
 };
 
+const shapeSets: [ShapeSet, ShapeSet] = [shapeSet1, shapeSet2];
+
 export const boardReducer = (
-  state: BoardCoordinates = { coordinates: createTable(4, 4) },
+  state: BoardState = {
+    coordinates: createTable(5, 5),
+    message: '',
+    shapeSet: 0
+  },
   action: BoardAction
-): BoardCoordinates => {
+): BoardState => {
   switch (action.type) {
     case ActionTypes.setHeight:
       return {
+        ...state,
+        message: '',
         coordinates: createTable(
           action.payload,
           state.coordinates[0] ? state.coordinates[0].length : 4
@@ -68,14 +68,27 @@ export const boardReducer = (
 
     case ActionTypes.setWidth:
       return {
+        ...state,
+        message: '',
         coordinates: createTable(state.coordinates.length || 4, action.payload)
       };
 
     case ActionTypes.placeShapes:
-      return {
-        coordinates: placeShapes(state.coordinates)
-      };
+      const newCoordinates = placeShapes(
+        state.coordinates,
+        shapeSets[state.shapeSet]
+      );
+      if (newCoordinates) {
+        return {
+          ...state,
+          message: '',
+          coordinates: newCoordinates
+        };
+      }
+      return { ...state, message: 'Solution not found, try bigger table' };
 
+    case ActionTypes.switchSet:
+      return { ...state, shapeSet: 1 - state.shapeSet };
     default:
       return state;
   }

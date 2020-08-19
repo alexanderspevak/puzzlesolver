@@ -1,9 +1,10 @@
-import { SetHeight, SetWidth, PlaceShapes } from './boardSize';
+import { SetHeight, SetWidth, PlaceShapes, SwitchShape } from './boardSize';
 
 export enum ActionTypes {
   setHeight,
   setWidth,
-  placeShapes
+  placeShapes,
+  switchSet
 }
 
-export type BoardAction = SetHeight | SetWidth | PlaceShapes;
+export type BoardAction = SetHeight | SetWidth | PlaceShapes | SwitchShape;

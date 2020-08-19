@@ -1,4 +1,4 @@
-import { CoordinatesTable } from '../reducers/board';
+import { CoordinatesTable } from '../types';
 
 interface ShapeCell {
   name: string;
@@ -42,13 +42,18 @@ export class Shape {
       cell => cell.name === connectedCellName
     );
 
-    if (this.container.find(cell => cell.name === newCellName)) return;
+    if (this.container.find(cell => cell.name === newCellName)) {
+      console.log('cell with such name already exists');
+      return;
+    }
 
     if (!connectedCell) {
+      console.log('can not connect to cell with such name');
       return;
     }
 
     if (connectedCell[atPosition]) {
+      console.log('cell already has adjacent cell at such position');
       return;
     }
     const newCell: ShapeCell = {
@@ -248,12 +253,5 @@ export class Shape {
   ): void {
     cell.positionHeight = height;
     cell.positionWidth = width;
-  }
-
-  public resetPositions(): void {
-    this.container.forEach((cell: ShapeCell): void => {
-      cell.positionHeight = undefined;
-      cell.positionWidth = undefined;
-    });
   }
 }

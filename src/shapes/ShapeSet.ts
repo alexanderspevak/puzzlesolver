@@ -1,31 +1,8 @@
 import { Shape } from './Shape';
-import { Position } from './Shape';
-import { CoordinatesTable } from '../reducers/board';
-
-export const shape1 = new Shape('red', 'alfa');
-shape1.addCell('alfa', Position.right, 'beta');
-shape1.addCell('beta', Position.right, 'gama');
-
-const shape2 = new Shape('green', 'alfa');
-shape2.addCell('alfa', Position.top, 'beta');
-shape2.addCell('beta', Position.right, 'gama');
-
-const shape3 = new Shape('purple', 'alfa');
-shape3.addCell('alfa', Position.right, 'beta');
-shape3.addCell('beta', Position.right, 'gama');
-shape3.addCell('gama', Position.right, 'delta');
-shape3.addCell('delta', Position.right, 'omega');
-
-const shape4 = new Shape('yellow', 'alfa');
-const shape5 = new Shape('white', 'alfa');
-
-shape5.addCell('alfa', Position.bottom, 'beta');
-shape5.addCell('beta', Position.bottom, 'gama');
-shape5.addCell('gama', Position.bottom, 'delta');
-shape5.addCell('delta', Position.left, 'omega');
+import { CoordinatesTable } from '../types';
 
 const POSITION_COUNT = 4;
-class ShapeSet {
+export class ShapeSet {
   shapes: Shape[] = [];
   public addShape(shape: Shape) {
     this.shapes.push(shape);
@@ -89,16 +66,7 @@ class ShapeSet {
     );
 
     rotateThresholds.forEach((threshold, index) => {
-      console.log('rotateShape', index);
       this.shapes[index].rotateShape();
     });
   }
 }
-
-export const shapeSet = new ShapeSet();
-
-shapeSet.addShape(shape1);
-shapeSet.addShape(shape2);
-shapeSet.addShape(shape3);
-shapeSet.addShape(shape4);
-shapeSet.addShape(shape5);
