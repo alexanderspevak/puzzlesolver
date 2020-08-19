@@ -17,6 +17,12 @@ shape3.addCell('gama', Position.right, 'delta');
 shape3.addCell('delta', Position.right, 'omega');
 
 const shape4 = new Shape('yellow', 'alfa');
+const shape5 = new Shape('white', 'alfa');
+
+shape5.addCell('alfa', Position.bottom, 'beta');
+shape5.addCell('beta', Position.bottom, 'gama');
+shape5.addCell('gama', Position.bottom, 'delta');
+shape5.addCell('delta', Position.left, 'omega');
 
 const POSITION_COUNT = 4;
 class ShapeSet {
@@ -34,7 +40,6 @@ class ShapeSet {
       const solvedTable = this.placeShapes(coordinatesTable);
 
       if (solvedTable) {
-        console.log('returned solved table', solvedTable);
         return solvedTable;
       }
 
@@ -96,3 +101,4 @@ shapeSet.addShape(shape1);
 shapeSet.addShape(shape2);
 shapeSet.addShape(shape3);
 shapeSet.addShape(shape4);
+shapeSet.addShape(shape5);
