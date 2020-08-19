@@ -42,7 +42,7 @@ const placeShapes = (
     })
   );
 
-  const newCoordinates = shapeSet.getMatchingCoordinatesTable(
+  const newCoordinates = shapeSet.getSolvedCoordinatesTable(
     temporaryCoordinates
   );
 
@@ -54,7 +54,7 @@ const placeShapes = (
 };
 
 export const boardReducer = (
-  state: BoardCoordinates = { coordinates: createTable(4, 4), message: '' },
+  state: BoardCoordinates = { coordinates: createTable(4, 4) },
   action: BoardAction
 ): BoardCoordinates => {
   switch (action.type) {

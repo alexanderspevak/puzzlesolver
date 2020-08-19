@@ -21,7 +21,6 @@ export class Shape {
   public color: string;
   public container: ShapeCell[];
   public firstCell: ShapeCell;
-  public rotations = 0;
 
   constructor(color: string, firstCellName: string) {
     this.color = color;
@@ -69,7 +68,6 @@ export class Shape {
       cell.bottom = cell.right;
       cell.right = topPosition;
     });
-    this.rotations++;
   }
 
   public getShapeCoordinates(
@@ -96,6 +94,7 @@ export class Shape {
       for (let j = 0; j < tableWidth; j++) {
         if (this.findMatchingPosition(this.firstCell, tableCoordinates, i, j)) {
           this.setCellCoordinates(this.firstCell, i, j);
+
           return true;
         }
       }
