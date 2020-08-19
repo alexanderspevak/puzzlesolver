@@ -10,7 +10,7 @@ export interface BoardState {
 
 const createTable = (height: number, width: number): CoordinatesTable => {
   if (isNaN(height) || isNaN(width)) {
-    return createTable(4, 4);
+    return createTable(5, 5);
   }
 
   const coordinates: CoordinatesTable = [];
@@ -62,7 +62,7 @@ export const boardReducer = (
         message: '',
         coordinates: createTable(
           action.payload,
-          state.coordinates[0] ? state.coordinates[0].length : 4
+          state.coordinates[0] ? state.coordinates[0].length : 5
         )
       };
 
@@ -70,7 +70,7 @@ export const boardReducer = (
       return {
         ...state,
         message: '',
-        coordinates: createTable(state.coordinates.length || 4, action.payload)
+        coordinates: createTable(state.coordinates.length || 5, action.payload)
       };
 
     case ActionTypes.placeShapes:
